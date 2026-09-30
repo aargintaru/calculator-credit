@@ -1,85 +1,146 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ro">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator Credit & Scenarii - GitHub Pages</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculator Credit & Punct de Inflexiune - GitHub Pages</title>
     <!-- Import stiluri CSS externe -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <!-- Chart.js pentru randarea graficului dinamic -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <h1>Simulare Avansată Credit Ipotecar</h1>
-            <p class="subtitle">Analiză comparativă și evoluția soldului în timp</p>
-        </header>
+      <header>
+        <h1>Simulare Avansată Credit Ipotecar</h1>
+        <p class="subtitle">
+          Evoluția soldului și momentul în care principalul depășește dobânda
+        </p>
+      </header>
 
-        <div class="card-grid">
-            <!-- Panoul de control / Slidere -->
-            <div class="card controls-card">
-                <h2>Parametri Simulare</h2>
-                
-                <div class="input-group">
-                    <label for="initialInput">Sold rămas (lei):</label>
-                    <div class="control-row">
-                        <input type="range" id="initialRange" min="400000" max="800000" step="10000" value="575000">
-                        <input type="number" id="initialInput" min="400000" max="800000" step="1000" value="575000">
-                    </div>
-                </div>
+      <div class="card-grid">
+        <!-- Panoul de control / Slidere -->
+        <div class="card controls-card">
+          <h2>Parametri Simulare</h2>
 
-                <div class="input-group">
-                    <label for="monthlyInput">Rata lunară (lei):</label>
-                    <div class="control-row">
-                        <input type="range" id="monthlyRange" min="3000" max="6000" step="50" value="3771">
-                        <input type="number" id="monthlyInput" min="3000" max="6000" step="10" value="3771">
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label for="rateInput">Dobânda fixă (%):</label>
-                    <div class="control-row">
-                        <input type="range" id="rateRange" min="3" max="9" step="0.1" value="4.79">
-                        <input type="number" id="rateInput" min="3" max="9" step="0.1" value="4.79">
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label for="yearsInput">Orizont analiză (ani):</label>
-                    <div class="control-row">
-                        <input type="range" id="yearsRange" min="5" max="30" step="1" value="20">
-                        <input type="number" id="yearsInput" min="5" max="30" step="1" value="20">
-                    </div>
-                </div>
+          <div class="input-group">
+            <label for="initialInput">Sold rămas (lei):</label>
+            <div class="control-row">
+              <input
+                type="range"
+                id="initialRange"
+                min="400000"
+                max="800000"
+                step="10000"
+                value="575000"
+              />
+              <input
+                type="number"
+                id="initialInput"
+                min="400000"
+                max="800000"
+                step="1000"
+                value="575000"
+              />
             </div>
+          </div>
 
-            <!-- Panoul de afișare grafic și sumare -->
-            <div class="card display-card">
-                <div class="summary-bar">
-                    <div class="summary-item">
-                        <span class="summary-label">Sold Inițial</span>
-                        <span class="summary-value" id="sumInitial">-</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Dobândă Aplicată</span>
-                        <span class="summary-value" id="sumRate">-</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Sold Final estimat</span>
-                        <span class="summary-value positive" id="sumBalance">-</span>
-                    </div>
-                </div>
-
-                <div class="chart-container">
-                    <canvas id="creditChart"></canvas>
-                </div>
-                <p class="footer-note">* Simulare orientativă pentru reducerea soldului în funcție de parametrii selectați.</p>
+          <div class="input-group">
+            <label for="monthlyInput">Rata lunară (lei):</label>
+            <div class="control-row">
+              <input
+                type="range"
+                id="monthlyRange"
+                min="3000"
+                max="6000"
+                step="50"
+                value="3771"
+              />
+              <input
+                type="number"
+                id="monthlyInput"
+                min="3000"
+                max="6000"
+                step="10"
+                value="3771"
+              />
             </div>
+          </div>
+
+          <div class="input-group">
+            <label for="rateInput">Dobânda fixă (%):</label>
+            <div class="control-row">
+              <input
+                type="range"
+                id="rateRange"
+                min="3"
+                max="9"
+                step="0.1"
+                value="4.79"
+              />
+              <input
+                type="number"
+                id="rateInput"
+                min="3"
+                max="9"
+                step="0.1"
+                value="4.79"
+              />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="yearsInput">Orizont analiză (ani):</label>
+            <div class="control-row">
+              <input
+                type="range"
+                id="yearsRange"
+                min="5"
+                max="30"
+                step="1"
+                value="20"
+              />
+              <input
+                type="number"
+                id="yearsInput"
+                min="5"
+                max="30"
+                step="1"
+                value="20"
+              />
+            </div>
+          </div>
         </div>
+
+        <!-- Panoul de afișare grafic și sumare -->
+        <div class="card display-card">
+          <div class="summary-bar">
+            <div class="summary-item">
+              <span class="summary-label">Sold Inițial</span>
+              <span class="summary-value" id="sumInitial">-</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Dobândă Aplicată</span>
+              <span class="summary-value" id="sumRate">-</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Punct Inflexiune</span>
+              <span class="summary-value positive" id="sumInflection">-</span>
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <canvas id="creditChart"></canvas>
+          </div>
+          <p class="footer-note" id="inflectionNote">
+            * Punctul în care rata lunară conține mai mult principal decât
+            dobândă.
+          </p>
+        </div>
+      </div>
     </div>
 
     <!-- Import logică JavaScript externă -->
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
