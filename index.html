@@ -1,152 +1,85 @@
-    <div class="p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Zona de Slidere / Parametri -->
-        <div class="md:col-span-1 space-y-6 bg-slate-50 p-5 rounded-xl border border-slate-200">
-            <h2 class="font-semibold text-slate-900 border-b pb-2">Parametri Simulare</h2>
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator Credit & Scenarii - GitHub Pages</title>
+    <!-- Import stiluri CSS externe -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js pentru randarea graficului dinamic -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Simulare Avansată Credit Ipotecar</h1>
+            <p class="subtitle">Analiză comparativă și evoluția soldului în timp</p>
+        </header>
 
-            <!-- Sold initial -->
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
-                    Sold rămas (lei): <span id="val_initial" class="text-indigo-600 font-bold">575000</span>
-                </label>
-                <input type="range" id="initial" min="400000" max="800000" step="5000" value="575000" 
-                    class="w-full accent-indigo-600 cursor-pointer" oninput="updateSimulation()">
+        <div class="card-grid">
+            <!-- Panoul de control / Slidere -->
+            <div class="card controls-card">
+                <h2>Parametri Simulare</h2>
+                
+                <div class="input-group">
+                    <label for="initialInput">Sold rămas (lei):</label>
+                    <div class="control-row">
+                        <input type="range" id="initialRange" min="400000" max="800000" step="10000" value="575000">
+                        <input type="number" id="initialInput" min="400000" max="800000" step="1000" value="575000">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="monthlyInput">Rata lunară (lei):</label>
+                    <div class="control-row">
+                        <input type="range" id="monthlyRange" min="3000" max="6000" step="50" value="3771">
+                        <input type="number" id="monthlyInput" min="3000" max="6000" step="10" value="3771">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="rateInput">Dobânda fixă (%):</label>
+                    <div class="control-row">
+                        <input type="range" id="rateRange" min="3" max="9" step="0.1" value="4.79">
+                        <input type="number" id="rateInput" min="3" max="9" step="0.1" value="4.79">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="yearsInput">Orizont analiză (ani):</label>
+                    <div class="control-row">
+                        <input type="range" id="yearsRange" min="5" max="30" step="1" value="20">
+                        <input type="number" id="yearsInput" min="5" max="30" step="1" value="20">
+                    </div>
+                </div>
             </div>
 
-            <!-- Rata lunara -->
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
-                    Rata lunară (lei): <span id="val_monthly" class="text-indigo-600 font-bold">3771</span>
-                </label>
-                <input type="range" id="monthly" min="3000" max="6000" step="50" value="3771" 
-                    class="w-full accent-indigo-600 cursor-pointer" oninput="updateSimulation()">
-            </div>
+            <!-- Panoul de afișare grafic și sumare -->
+            <div class="card display-card">
+                <div class="summary-bar">
+                    <div class="summary-item">
+                        <span class="summary-label">Sold Inițial</span>
+                        <span class="summary-value" id="sumInitial">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Dobândă Aplicată</span>
+                        <span class="summary-value" id="sumRate">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Sold Final estimat</span>
+                        <span class="summary-value positive" id="sumBalance">-</span>
+                    </div>
+                </div>
 
-            <!-- Dobanda -->
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
-                    Dobândă fixă (%): <span id="val_rate" class="text-indigo-600 font-bold">4.79</span>%
-                </label>
-                <input type="range" id="rate" min="3" max="9" step="0.05" value="4.79" 
-                    class="w-full accent-indigo-600 cursor-pointer" oninput="updateSimulation()">
-            </div>
-
-            <!-- Orizont ani -->
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
-                    Orizont analiză (ani): <span id="val_years" class="text-indigo-600 font-bold">20</span>
-                </label>
-                <input type="range" id="years" min="5" max="30" step="1" value="20" 
-                    class="w-full accent-indigo-600 cursor-pointer" oninput="updateSimulation()">
-            </div>
-
-            <!-- Sumar rapid -->
-            <div class="pt-4 border-t border-slate-200 space-y-2">
-                <div class="text-xs text-slate-500">Sold la finalul perioadei selectate:</div>
-                <div id="summary_balance" class="text-xl font-extrabold text-slate-900">-</div>
-            </div>
-        </div>
-
-        <!-- Zona Grafic -->
-        <div class="md:col-span-2 flex flex-col justify-between">
-            <div class="relative w-full h-[350px]">
-                <canvas id="creditChart"></canvas>
-            </div>
-            <div class="text-xs text-slate-400 mt-4 italic border-t pt-3">
-                * Notă: Simulare orientativă bazată pe formula de amortizare a creditului cu rată descrescătoare/egală fixă. Poți folosi acest fișier complet offline salvându-l în calculatorul tău.
+                <div class="chart-container">
+                    <canvas id="creditChart"></canvas>
+                </div>
+                <p class="footer-note">* Simulare orientativă pentru reducerea soldului în funcție de parametrii selectați.</p>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    let myChart = null;
-
-    function formatCurrency(val) {
-        return new Intl.NumberFormat('ro-RO', { style: 'currency', currency: 'RON', maximumFractionDigits: 0 }).format(val);
-    }
-
-    function calculateBalance(initial, monthly, annualRate, years) {
-        const r = annualRate / 100 / 12;
-        const data = [];
-        const labels = [];
-
-        for (let t = 0; t <= years; t++) {
-            labels.push(`Anul ${t}`);
-            const months = t * 12;
-            if (months === 0) {
-                data.push(initial);
-            } else {
-                // Formula sold rămas credit: S * (1+r)^n - PMT * [((1+r)^n - 1) / r]
-                const compound = Math.pow(1 + r, months);
-                const remaining = initial * compound - monthly * ((compound - 1) / r);
-                data.push(Math.max(0, Math.round(remaining)));
-            }
-        }
-        return { labels, data };
-    }
-
-    function updateSimulation() {
-        const initial = parseFloat(document.getElementById('initial').value);
-        const monthly = parseFloat(document.getElementById('monthly').value);
-        const rate = parseFloat(document.getElementById('rate').value);
-        const years = parseInt(document.getElementById('years').value);
-
-        // Actualizare valori vizuale slidere
-        document.getElementById('val_initial').innerText = initial.toLocaleString('ro-RO');
-        document.getElementById('val_monthly').innerText = monthly.toLocaleString('ro-RO');
-        document.getElementById('val_rate').innerText = rate.toFixed(2);
-        document.getElementById('val_years').innerText = years;
-
-        const result = calculateBalance(initial, monthly, rate, years);
-        
-        // Actualizare sumar final
-        const finalBal = result.data[result.data.length - 1];
-        document.getElementById('summary_balance').innerText = formatCurrency(finalBal);
-
-        // Actualizare grafic
-        if (myChart) {
-            myChart.data.labels = result.labels;
-            myChart.data.datasets[0].data = result.data;
-            myChart.update();
-        } else {
-            const ctx = document.getElementById('creditChart').getContext('2d');
-            myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: result.labels,
-                    datasets: [{
-                        label: 'Scenariul nou (Sold rămas în lei)',
-                        data: result.data,
-                        borderColor: '#4f46e5',
-                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return value.toLocaleString('ro-RO') + ' lei';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
-
-    // Inițializare la încărcare pagină
-    window.onload = updateSimulation;
-</script>
+    <!-- Import logică JavaScript externă -->
+    <script src="script.js"></script>
+</body>
+</html>
